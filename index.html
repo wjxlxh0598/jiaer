@@ -17,6 +17,8 @@
     --text-light: #9a8c91;
     --shadow: 0 4px 20px rgba(255, 143, 163, 0.15);
     --shadow-hover: 0 8px 30px rgba(255, 143, 163, 0.25);
+    --danger: #e0556a;
+    --success: #6abf8b;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -77,6 +79,30 @@
     background: linear-gradient(90deg, var(--pink), transparent);
   }
 
+  /* ---- admin button ---- */
+  .header-actions {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    display: flex;
+    gap: 10px;
+  }
+
+  .admin-btn, .logout-btn {
+    background: var(--card-bg);
+    border: 2px solid var(--pink-light);
+    border-radius: 30px;
+    padding: 8px 18px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--pink-dark);
+    transition: all 0.3s ease;
+    font-weight: 600;
+  }
+
+  .admin-btn:hover { background: var(--pink-light); border-color: var(--pink); }
+  .logout-btn:hover { background: #fee2e2; border-color: var(--danger); color: var(--danger); }
+
   /* ---- gallery ---- */
   .gallery {
     display: grid;
@@ -113,7 +139,6 @@
 
   .card:hover .card-img { transform: scale(1.04); }
 
-  /* placeholder image when no src */
   .card-img-placeholder {
     width: 100%;
     aspect-ratio: 4 / 3;
@@ -140,6 +165,37 @@
     font-weight: 600;
     color: var(--text);
     flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .card-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  /* ---- delete button ---- */
+  .delete-btn {
+    background: none;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    width: 34px; height: 34px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.5;
+  }
+
+  .delete-btn:hover {
+    opacity: 1;
+    background: #fee2e2;
+    border-color: var(--danger);
   }
 
   /* ---- like button ---- */
@@ -255,14 +311,6 @@
   }
   .lightbox-close:hover { background: rgba(255,255,255,0.35); }
 
-  .lightbox-caption {
-    position: absolute;
-    bottom: 32px;
-    color: #fff;
-    font-size: 1rem;
-    text-align: center;
-  }
-
   /* ---- upload section ---- */
   .upload-section {
     text-align: center;
@@ -290,6 +338,11 @@
   .upload-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 24px rgba(255,143,163,0.45);
+  }
+
+  .upload-btn.loading {
+    pointer-events: none;
+    opacity: 0.7;
   }
 
   .upload-hint {
@@ -327,6 +380,146 @@
     margin-top: 4px;
   }
 
+  /* ---- modal ---- */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(92, 75, 81, 0.6);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.25s ease;
+  }
+
+  .modal-overlay.active { display: flex; }
+
+  .modal-box {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 36px 32px;
+    width: 90%;
+    max-width: 380px;
+    box-shadow: 0 12px 60px rgba(0,0,0,0.2);
+    position: relative;
+    animation: zoomIn 0.3s ease;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: var(--text-light);
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  .modal-close:hover { color: var(--text); }
+
+  .modal-box h2 {
+    text-align: center;
+    color: var(--pink-dark);
+    margin-bottom: 24px;
+    font-size: 1.3rem;
+  }
+
+  .modal-box input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--pink-light);
+    border-radius: 12px;
+    font-size: 0.95rem;
+    margin-bottom: 14px;
+    outline: none;
+    transition: border-color 0.3s;
+    font-family: inherit;
+  }
+
+  .modal-box input:focus { border-color: var(--pink); }
+
+  .login-submit-btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, var(--pink), var(--lavender));
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 6px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .login-submit-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(255,143,163,0.3); }
+
+  .login-error {
+    color: var(--danger);
+    font-size: 0.85rem;
+    text-align: center;
+    margin-top: 10px;
+    min-height: 20px;
+  }
+
+  /* ---- toast ---- */
+  .toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 3000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .toast {
+    padding: 12px 24px;
+    border-radius: 12px;
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    animation: slideIn 0.35s ease;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    max-width: 360px;
+  }
+
+  .toast-success { background: var(--success); }
+  .toast-error { background: var(--danger); }
+  .toast-info { background: #8fa4d4; }
+
+  @keyframes slideIn {
+    from { transform: translateX(120%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+
+  @keyframes slideOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(120%); opacity: 0; }
+  }
+
+  /* ---- loading spinner ---- */
+  .spinner {
+    display: inline-block;
+    width: 20px; height: 20px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-overlay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px;
+    grid-column: 1 / -1;
+  }
+
   /* ---- footer ---- */
   footer {
     text-align: center;
@@ -351,6 +544,8 @@
     .stats-bar { gap: 12px; }
     .stat-item { padding: 12px 18px; }
     .stat-number { font-size: 1.3rem; }
+
+    .header-actions { top: 12px; right: 12px; }
   }
 
   @media (max-width: 480px) {
@@ -365,6 +560,10 @@
 <body>
 
 <header>
+  <div class="header-actions">
+    <button class="admin-btn" id="adminBtn">🔑 管理</button>
+    <button class="logout-btn" id="logoutBtn" style="display:none">🚪 退出</button>
+  </div>
   <span class="logo-icon">📷</span>
   <h1>加二的相册</h1>
   <p>每一张照片，都是时光的标本 ✦</p>
@@ -382,12 +581,12 @@
   </div>
 </div>
 
-<div class="upload-section">
-  <label class="upload-btn" for="photoUpload">
+<div class="upload-section" id="uploadSection" style="display:none">
+  <label class="upload-btn" id="uploadLabel" for="photoUpload">
     📁 添加你的照片作品
   </label>
   <input type="file" id="photoUpload" accept="image/*" multiple hidden>
-  <p class="upload-hint">支持 JPG / PNG / WebP，可多选</p>
+  <p class="upload-hint">支持 JPG / PNG / WebP，可多选，自动压缩</p>
 </div>
 
 <div class="gallery" id="gallery"></div>
@@ -397,178 +596,408 @@
   <img src="" alt="" id="lightboxImg">
 </div>
 
+<!-- Admin Login Modal -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal-box">
+    <button class="modal-close" id="loginClose">&times;</button>
+    <h2>🔐 管理员登录</h2>
+    <form id="loginForm">
+      <input type="text" id="loginUsername" placeholder="用户名" required autocomplete="username">
+      <input type="password" id="loginPassword" placeholder="密码" required autocomplete="current-password">
+      <button type="submit" class="login-submit-btn">登 录</button>
+    </form>
+    <p class="login-error" id="loginError"></p>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
 <footer>
   <span class="hearts">💖 🧸 💖</span>
   <p>谢谢你来欣赏我的作品 ~</p>
 </footer>
 
 <script>
-  (function() {
-    const STORAGE_KEY = 'photo_gallery_data';
-    const galleryEl = document.getElementById('gallery');
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightboxImg');
-    const totalPhotosEl = document.getElementById('totalPhotos');
-    const totalLikesEl = document.getElementById('totalLikes');
-    const uploadInput = document.getElementById('photoUpload');
+(function() {
+  const API_BASE = '/.netlify/functions/api';
+  const AUTH_KEY = 'photo_admin_auth';
+  const LIKED_KEY = 'photo_liked_ids';
 
-    // ---- data layer ----
-    function loadPhotos() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        return raw ? JSON.parse(raw) : [];
-      } catch { return []; }
-    }
+  const galleryEl = document.getElementById('gallery');
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightboxImg');
+  const totalPhotosEl = document.getElementById('totalPhotos');
+  const totalLikesEl = document.getElementById('totalLikes');
+  const uploadInput = document.getElementById('photoUpload');
+  const uploadSection = document.getElementById('uploadSection');
+  const uploadLabel = document.getElementById('uploadLabel');
+  const adminBtn = document.getElementById('adminBtn');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const loginModal = document.getElementById('loginModal');
+  const loginForm = document.getElementById('loginForm');
+  const loginError = document.getElementById('loginError');
+  const toastContainer = document.getElementById('toastContainer');
 
-    function savePhotos(photos) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(photos));
-    }
+  let photos = [];
+  let loading = false;
 
-    let photos = loadPhotos();
+  // ---- auth ----
+  function getAuth() {
+    try { return JSON.parse(sessionStorage.getItem(AUTH_KEY)); } catch { return null; }
+  }
+  function setAuth(u, p) { sessionStorage.setItem(AUTH_KEY, JSON.stringify({ username: u, password: p })); }
+  function clearAuth() { sessionStorage.removeItem(AUTH_KEY); }
+  function isAdmin() { return getAuth() !== null; }
 
-    // ---- render ----
-    function updateStats() {
-      totalPhotosEl.textContent = photos.length;
-      const total = photos.reduce((sum, p) => sum + (p.likes || 0), 0);
-      totalLikesEl.textContent = total;
-    }
+  // ---- liked state ----
+  function getLikedIds() {
+    try { return JSON.parse(localStorage.getItem(LIKED_KEY) || '[]'); } catch { return []; }
+  }
+  function addLiked(id) {
+    const ids = getLikedIds();
+    if (!ids.includes(id)) { ids.push(id); localStorage.setItem(LIKED_KEY, JSON.stringify(ids)); }
+  }
+  function isLiked(id) { return getLikedIds().includes(id); }
 
-    function render() {
-      if (photos.length === 0) {
-        galleryEl.innerHTML = `
-          <div style="grid-column:1/-1;text-align:center;padding:80px 20px;color:var(--text-light)">
-            <div style="font-size:64px;margin-bottom:16px">🖼️</div>
-            <p style="font-size:1.1rem">还没有作品哦～ 点击上方按钮来添加你的第一张照片吧！</p>
-          </div>`;
-      } else {
-        galleryEl.innerHTML = photos.map((photo, idx) => `
-          <div class="card" data-index="${idx}">
-            ${photo.dataUrl
-              ? `<img class="card-img" src="${photo.dataUrl}" alt="${escHtml(photo.title)}" loading="lazy">`
-              : `<div class="card-img-placeholder">📷</div>`}
-            <div class="card-body">
-              <span class="card-title">${escHtml(photo.title)}</span>
-              <button class="like-btn ${photo.liked ? 'liked' : ''}" data-index="${idx}">
-                <span class="heart">${photo.liked ? '💖' : '🤍'}</span>
-                <span class="like-count">${photo.likes || 0}</span>
-              </button>
-            </div>
-          </div>
-        `).join('');
-      }
-      updateStats();
-    }
+  // ---- API ----
+  async function apiGet(action) {
+    const res = await fetch(`${API_BASE}?action=${encodeURIComponent(action)}`);
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || '请求失败');
+    return data;
+  }
 
-    function escHtml(str) {
-      const div = document.createElement('div');
-      div.textContent = str;
-      return div.innerHTML;
-    }
-
-    // ---- likes ----
-    galleryEl.addEventListener('click', function(e) {
-      const likeBtn = e.target.closest('.like-btn');
-      if (likeBtn) {
-        e.stopPropagation();
-        const idx = parseInt(likeBtn.dataset.index);
-        toggleLike(idx, likeBtn);
-        return;
-      }
-
-      const card = e.target.closest('.card');
-      if (card) {
-        const idx = parseInt(card.dataset.index);
-        openLightbox(idx);
-      }
+  async function apiPost(body) {
+    const res = await fetch(API_BASE, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
     });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || '请求失败');
+    return data;
+  }
 
-    function toggleLike(idx, btnEl) {
-      const photo = photos[idx];
-      photo.liked = !photo.liked;
-      photo.likes = (photo.likes || 0) + (photo.liked ? 1 : -1);
+  // ---- toast ----
+  function showToast(message, type) {
+    if (type === void 0) type = 'info';
+    var toast = document.createElement('div');
+    toast.className = 'toast toast-' + type;
+    toast.textContent = message;
+    toastContainer.appendChild(toast);
+    setTimeout(function() {
+      toast.style.animation = 'slideOut 0.3s ease forwards';
+      toast.addEventListener('animationend', function() { toast.remove(); });
+    }, 3000);
+  }
 
-      if (photo.liked && btnEl) {
-        spawnFloatingHearts(btnEl);
-      }
+  // ---- stats ----
+  function updateStats() {
+    totalPhotosEl.textContent = photos.length;
+    var total = photos.reduce(function(s, p) { return s + (p.likes || 0); }, 0);
+    totalLikesEl.textContent = total;
+  }
 
-      savePhotos(photos);
-      render();
+  // ---- render ----
+  function render() {
+    var admin = isAdmin();
+
+    // header buttons
+    adminBtn.style.display = admin ? 'none' : 'inline-block';
+    logoutBtn.style.display = admin ? 'inline-block' : 'none';
+    uploadSection.style.display = admin ? 'block' : 'none';
+
+    if (loading) {
+      galleryEl.innerHTML = '<div class="loading-overlay"><div style="text-align:center;color:var(--text-light)"><div class="spinner" style="border-color:rgba(255,143,163,0.2);border-top-color:var(--pink-dark);width:36px;height:36px;margin:0 auto 12px"></div><p>加载中...</p></div></div>';
+      return;
     }
 
-    function spawnFloatingHearts(btnEl) {
-      const rect = btnEl.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const cy = rect.top;
-      const hearts = ['💕', '💖', '💗', '💝', '✨', '💘'];
+    if (photos.length === 0) {
+      galleryEl.innerHTML = '\n          <div style="grid-column:1/-1;text-align:center;padding:80px 20px;color:var(--text-light)">\n            <div style="font-size:64px;margin-bottom:16px">🖼️</div>\n            <p style="font-size:1.1rem">还没有作品哦～' + (admin ? ' 点击上方按钮来添加你的第一张照片吧！' : '') + '</p>\n          </div>';
+    } else {
+      galleryEl.innerHTML = photos.map(function(photo, idx) {
+        var liked = isLiked(photo.id);
+        return '\n          <div class="card" data-index="' + idx + '">\n            <img class="card-img" src="' + escHtml(photo.url) + '" alt="' + escHtml(photo.title) + '" loading="lazy">\n            <div class="card-body">\n              <span class="card-title">' + escHtml(photo.title) + '</span>\n              <div class="card-actions">\n                ' + (admin ? '<button class="delete-btn" data-id="' + photo.id + '" title="删除">🗑️</button>' : '') + '\n                <button class="like-btn ' + (liked ? 'liked' : '') + '" data-index="' + idx + '">\n                  <span class="heart">' + (liked ? '💖' : '🤍') + '</span>\n                  <span class="like-count">' + (photo.likes || 0) + '</span>\n                </button>\n              </div>\n            </div>\n          </div>';
+      }).join('');
+    }
+    updateStats();
+  }
 
-      for (let i = 0; i < 6; i++) {
-        setTimeout(() => {
-          const heart = document.createElement('span');
+  function escHtml(str) {
+    var div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  // ---- load photos ----
+  async function loadPhotos() {
+    loading = true;
+    render();
+    try {
+      var data = await apiGet('list');
+      photos = data.photos || [];
+    } catch (err) {
+      console.error('Load photos error:', err);
+      photos = [];
+      showToast('加载照片失败，请检查网络连接', 'error');
+    }
+    loading = false;
+    render();
+  }
+
+  // ---- likes ----
+  galleryEl.addEventListener('click', function(e) {
+    var likeBtn = e.target.closest('.like-btn');
+    if (likeBtn) {
+      e.stopPropagation();
+      var idx = parseInt(likeBtn.dataset.index);
+      toggleLike(idx, likeBtn);
+      return;
+    }
+
+    var deleteBtn = e.target.closest('.delete-btn');
+    if (deleteBtn) {
+      e.stopPropagation();
+      var id = parseInt(deleteBtn.dataset.id);
+      handleDelete(id);
+      return;
+    }
+
+    var card = e.target.closest('.card');
+    if (card) {
+      var idx2 = parseInt(card.dataset.index);
+      openLightbox(idx2);
+    }
+  });
+
+  async function toggleLike(idx, btnEl) {
+    var photo = photos[idx];
+    if (isLiked(photo.id)) return; // already liked, prevent duplicate
+
+    // optimistic
+    var prevLikes = photo.likes;
+    photo.likes = prevLikes + 1;
+    addLiked(photo.id);
+    render();
+    if (btnEl) spawnFloatingHearts(btnEl);
+
+    try {
+      var data = await apiPost({ action: 'like', id: photo.id });
+      photo.likes = data.photo.likes;
+      render();
+    } catch (err) {
+      photo.likes = prevLikes;
+      var ids = getLikedIds().filter(function(x) { return x !== photo.id; });
+      localStorage.setItem(LIKED_KEY, JSON.stringify(ids));
+      render();
+      showToast('点赞失败，请稍后重试', 'error');
+    }
+  }
+
+  function spawnFloatingHearts(btnEl) {
+    var rect = btnEl.getBoundingClientRect();
+    var cx = rect.left + rect.width / 2;
+    var cy = rect.top;
+    var hearts = ['💕', '💖', '💗', '💝', '✨', '💘'];
+
+    for (var i = 0; i < 6; i++) {
+      (function(idx) {
+        setTimeout(function() {
+          var heart = document.createElement('span');
           heart.className = 'floating-heart';
-          heart.textContent = hearts[i % hearts.length];
+          heart.textContent = hearts[idx % hearts.length];
           heart.style.left = (cx + (Math.random() - 0.5) * 80) + 'px';
           heart.style.top = cy + 'px';
           heart.style.animationDuration = (1 + Math.random() * 0.8) + 's';
           document.body.appendChild(heart);
-          heart.addEventListener('animationend', () => heart.remove());
-        }, i * 60);
+          heart.addEventListener('animationend', function() { heart.remove(); });
+        }, idx * 60);
+      })(i);
+    }
+  }
+
+  // ---- delete ----
+  async function handleDelete(id) {
+    if (!confirm('确定要删除这张照片吗？此操作不可撤销。')) return;
+
+    var auth = getAuth();
+    try {
+      await apiPost({ action: 'delete', username: auth.username, password: auth.password, id: id });
+      photos = photos.filter(function(p) { return p.id !== id; });
+      var likedIds = getLikedIds().filter(function(x) { return x !== id; });
+      localStorage.setItem(LIKED_KEY, JSON.stringify(likedIds));
+      render();
+      showToast('照片已删除', 'success');
+    } catch (err) {
+      if (err.message.indexOf('401') !== -1 || err.message.indexOf('密码') !== -1) {
+        clearAuth();
+        render();
+        showToast('登录已过期，请重新登录', 'error');
+      } else {
+        showToast('删除失败: ' + err.message, 'error');
+      }
+    }
+  }
+
+  // ---- lightbox ----
+  function openLightbox(idx) {
+    var photo = photos[idx];
+    if (!photo.url) return;
+    lightboxImg.src = photo.url;
+    lightboxImg.alt = photo.title;
+    lightbox.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', function(e) {
+    if (e.target === lightbox) closeLightbox();
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeLightbox();
+  });
+
+  // ---- upload ----
+  uploadInput.addEventListener('change', function() {
+    var files = Array.from(this.files);
+    if (files.length === 0) return;
+    handleUpload(files);
+    this.value = '';
+  });
+
+  function compressImage(file, maxWidth, quality) {
+    if (maxWidth === void 0) maxWidth = 1920;
+    if (quality === void 0) quality = 0.8;
+    return new Promise(function(resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var img = new Image();
+        img.onload = function() {
+          var w = img.width, h = img.height;
+          if (w > maxWidth) { h = (maxWidth / w) * h; w = maxWidth; }
+          var canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          var ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.onerror = function() { reject(new Error('图片加载失败')); };
+        img.src = e.target.result;
+      };
+      reader.onerror = function() { reject(new Error('文件读取失败')); };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function handleUpload(files) {
+    var auth = getAuth();
+    if (!auth) { showToast('请先登录', 'error'); return; }
+
+    var imageFiles = files.filter(function(f) { return f.type.startsWith('image/'); });
+    if (imageFiles.length === 0) return;
+
+    uploadLabel.classList.add('loading');
+    var uploadText = uploadLabel.innerHTML;
+    uploadLabel.innerHTML = '<span class="spinner"></span> 上传中...';
+
+    var successCount = 0;
+    for (var i = 0; i < imageFiles.length; i++) {
+      var file = imageFiles[i];
+      try {
+        var dataUrl = await compressImage(file);
+        var title = file.name.replace(/\.[^.]+$/, '');
+        var data = await apiPost({
+          action: 'add',
+          username: auth.username,
+          password: auth.password,
+          dataUrl: dataUrl,
+          title: title,
+        });
+        photos.unshift(data.photo);
+        render();
+        successCount++;
+      } catch (err) {
+        if (err.message.indexOf('401') !== -1 || err.message.indexOf('密码') !== -1) {
+          clearAuth();
+          render();
+          showToast('登录已过期，请重新登录', 'error');
+          break;
+        }
+        showToast('上传 "' + file.name + '" 失败: ' + err.message, 'error');
       }
     }
 
-    // ---- lightbox ----
-    function openLightbox(idx) {
-      const photo = photos[idx];
-      if (!photo.dataUrl) return;
-      lightboxImg.src = photo.dataUrl;
-      lightboxImg.alt = photo.title;
-      lightbox.classList.add('active');
-      document.body.style.overflow = 'hidden';
+    uploadLabel.innerHTML = uploadText;
+    uploadLabel.classList.remove('loading');
+
+    if (successCount > 0) {
+      showToast('成功上传 ' + successCount + ' 张照片', 'success');
     }
+  }
 
-    function closeLightbox() {
-      lightbox.classList.remove('active');
-      document.body.style.overflow = '';
-    }
-
-    document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
-    lightbox.addEventListener('click', function(e) {
-      if (e.target === lightbox) closeLightbox();
-    });
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') closeLightbox();
-    });
-
-    // ---- upload ----
-    uploadInput.addEventListener('change', function() {
-      const files = Array.from(this.files);
-      if (files.length === 0) return;
-
-      let loaded = 0;
-      files.forEach(file => {
-        if (!file.type.startsWith('image/')) return;
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          photos.push({
-            id: Date.now() + Math.random(),
-            title: file.name.replace(/\.[^.]+$/, ''),
-            dataUrl: e.target.result,
-            likes: 0,
-            liked: false,
-          });
-          loaded++;
-          if (loaded === files.length || loaded === files.filter(f => f.type.startsWith('image/')).length) {
-            savePhotos(photos);
-            render();
-          }
-        };
-        reader.readAsDataURL(file);
-      });
-      this.value = '';
-    });
-
-    // ---- init ----
+  // ---- login ----
+  adminBtn.addEventListener('click', function() { showLoginModal(); });
+  logoutBtn.addEventListener('click', function() {
+    clearAuth();
     render();
-  })();
+    showToast('已退出登录', 'info');
+  });
+
+  function showLoginModal() {
+    loginModal.classList.add('active');
+    document.getElementById('loginUsername').focus();
+    loginError.textContent = '';
+  }
+
+  function hideLoginModal() {
+    loginModal.classList.remove('active');
+    document.getElementById('loginPassword').value = '';
+    loginError.textContent = '';
+  }
+
+  document.getElementById('loginClose').addEventListener('click', hideLoginModal);
+  loginModal.addEventListener('click', function(e) {
+    if (e.target === loginModal) hideLoginModal();
+  });
+
+  loginForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    var username = document.getElementById('loginUsername').value.trim();
+    var password = document.getElementById('loginPassword').value.trim();
+
+    if (!username || !password) {
+      loginError.textContent = '请输入用户名和密码';
+      return;
+    }
+
+    var submitBtn = loginForm.querySelector('.login-submit-btn');
+    var origText = submitBtn.textContent;
+    submitBtn.textContent = '登录中...';
+    submitBtn.disabled = true;
+
+    try {
+      await apiPost({ action: 'login', username: username, password: password });
+      setAuth(username, password);
+      hideLoginModal();
+      render();
+      showToast('登录成功，欢迎管理员！', 'success');
+    } catch (err) {
+      loginError.textContent = err.message || '登录失败';
+    }
+
+    submitBtn.textContent = origText;
+    submitBtn.disabled = false;
+  });
+
+  // ---- init ----
+  loadPhotos();
+})();
 </script>
 
 </body>
